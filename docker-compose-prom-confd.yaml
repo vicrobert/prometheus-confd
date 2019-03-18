@@ -1,0 +1,10 @@
+prometheus:
+  image: yangjb/prometheus-confd:latest
+  restart: always
+  ports:
+    - "9090:9090"
+  volumes:
+    - /etc/confd:/etc/confd
+    - /etc/prometheus:/etc/prometheus
+    - /data/dc-container/prometheus:/prometheus
+    - /data/dc-container/confd:/var/log/containers/confd

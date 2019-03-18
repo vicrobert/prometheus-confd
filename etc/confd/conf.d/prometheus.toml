@@ -1,0 +1,8 @@
+[template]
+prefix = "/prometheus"
+src = "prometheus.tmpl"
+dest = "/etc/prometheus/prometheus.yml"
+keys = [
+  "/node-exporters",
+]
+reload_cmd = "/prometheus-confd restart-prom"

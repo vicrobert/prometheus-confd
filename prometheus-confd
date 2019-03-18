@@ -1,0 +1,28 @@
+#!/bin/sh
+#MAINTAINER: yangjbd@digitalchina.com
+
+prom_stop() {
+  pid=$(ps -ef | grep '/bin/prometheus' | grep -v 'grep' |awk 'NR==1{print $1}')
+  [[ "z$pid" == "z" ]] || kill -9 $pid
+}
+
+prom_start() {
+  exec /bin/prometheus \
+    --config.file=/etc/prometheus/prometheus.yml \
+    --storage.tsdb.path=/prometheus \
+    --web.console.libraries=/usr/share/prometheus/consol &
+}
+
+wait_confd() {
+  . /etc/confd/confd.conf
+  /bin/confd ${BACKEND} ${NODE} >>/var/log/containers/confd/confd.log 2>&1
+}
+
+if [ $# -gt 0 ] && [[ "z$1" == "zrestart-prom" ]]; then
+  prom_stop
+  sleep 3
+  prom_start
+else
+  prom_start
+  wait_confd
+fi
